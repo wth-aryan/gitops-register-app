@@ -1,18 +1,15 @@
 pipeline {
     agent { label "Jenkins-Agent" }
 
-   
     environment {
-        APP_NAME = "gitops-register-app"  
-        IMAGE_TAG = "latest"             
+       
+        APP_NAME = "wtharyan/register-app-pipeline" 
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
- 
 
     stages {
         stage("Cleanup Workspace") {
-            steps {
-                cleanWs()
-            }
+            steps { cleanWs() }
         }
 
         stage("Checkout from SCM") {
@@ -23,10 +20,10 @@ pipeline {
 
         stage("Update the Deployment Tags") {
             steps {
-              
                 sh """
                    cat deployment.yaml
-                   sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
+                   # 2. USE PIPES (|) INSTEAD OF SLASHES (/)
+                   sed -i 's|${APP_NAME}.*|${APP_NAME}:${IMAGE_TAG}|g' deployment.yaml
                    cat deployment.yaml
                 """
             }
@@ -40,7 +37,6 @@ pipeline {
                    git add deployment.yaml
                    git commit -m "Updated Deployment Manifest"
                 """
-                
                 withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
                     sh "git push https://github.com/wth-aryan/gitops-register-app main"
                 }
