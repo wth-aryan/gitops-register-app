@@ -1,7 +1,9 @@
-code gitops-register-appcode gitops-register-apppipeline {
+pipeline {
     agent { label "Jenkins-Agent" }
+
     environment {
-              APP_NAME = "register-app-pipeline"
+        APP_NAME = "register-app-pipeline"
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -12,9 +14,9 @@ code gitops-register-appcode gitops-register-apppipeline {
         }
 
         stage("Checkout from SCM") {
-               steps {
-                   git branch: 'main', credentialsId: 'github', url: 'https://github.com/wth-aryan/gitops-register-app.git'
-               }
+            steps {
+                git branch: 'main', credentialsId: 'github', url: 'https://github.com/wth-aryan/gitops-register-app'
+            }
         }
 
         stage("Update the Deployment Tags") {
@@ -35,11 +37,11 @@ code gitops-register-appcode gitops-register-apppipeline {
                    git add deployment.yaml
                    git commit -m "Updated Deployment Manifest"
                 """
+                
                 withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
-                  sh "git push https://github.com/wth-aryan/gitops-register-app.git main"
+                    sh "git push https://github.com/wth-aryan/gitops-register-app main"
                 }
             }
         }
-      
     }
 }
