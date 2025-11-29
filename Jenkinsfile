@@ -1,6 +1,13 @@
 pipeline {
     agent { label "Jenkins-Agent" }
 
+   
+    environment {
+        APP_NAME = "gitops-register-app"  
+        IMAGE_TAG = "latest"             
+    }
+ 
+
     stages {
         stage("Cleanup Workspace") {
             steps {
@@ -16,6 +23,7 @@ pipeline {
 
         stage("Update the Deployment Tags") {
             steps {
+              
                 sh """
                    cat deployment.yaml
                    sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
