@@ -1,11 +1,6 @@
 pipeline {
     agent { label "Jenkins-Agent" }
 
-    environment {
-        APP_NAME = "register-app-pipeline"
-        IMAGE_TAG = "${BUILD_NUMBER}"
-    }
-
     stages {
         stage("Cleanup Workspace") {
             steps {
