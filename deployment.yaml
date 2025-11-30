@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: register-app
-          image: wtharyan/register-app-pipeline:4
+          image: wtharyan/register-app-pipeline:5
           resources:
             limits:
               memory: "256Mi"
